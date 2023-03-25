@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 
+import uvicorn
+
 app = FastAPI()
 
 
@@ -17,12 +19,22 @@ async def all_books():
     return books
 
 
-@app.get("/books/{book_title}")
+@app.get("/books/bytitle/{book_title}")
 async def single_book(book_title: str):
     for book in books:
         if book["title"] == book_title:
 
             return book
+
+
+@app.get("/books/byauthor/{author}")
+async def get_books_by_author(author: str):
+    books_by_author = []
+    for book in books:
+        if book["author"] == author:
+            books_by_author.append(book)
+
+    return books_by_author
 
 
 @app.post("/book")
@@ -58,3 +70,7 @@ async def delete_book(title: str):
         count += 1
 
     return books
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
